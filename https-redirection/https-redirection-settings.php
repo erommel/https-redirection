@@ -43,6 +43,7 @@ function httpsrdrctn_settings_page() {
                 So before enabling this plugin's feature, visit your site's HTTPS URL <a href="<?php echo $siteSSLurl; ?>" target="_blank"><?php echo $siteSSLurl; ?></a> to make sure the page loads correctly. 
                 Otherwise you may get locked out if your SSL certificate is not installed correctly on your site or the HTTPS URL is not working and this plugin is auto redirecting to the HTTPS URL.
             </p>
+            <p><span style='font-weight:bold;color:red;'>Important!</span> If you're using caching plugins similar to W3 Total Cache or WP Super Cache, you need to clear their cache after you enable or disable automatic redirection option. Failing to do so may result in mixed content warning from browser.</p>
         </div>
 
         <?php

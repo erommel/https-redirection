@@ -96,6 +96,7 @@ Here is an example for German language files.
 = v1.7 =
 - https://yoursite.com/some-page is replaced with site's actual https address in Settings information box.
 - Additional options are only accessible when "Enable automatic redirection to the "HTTPS" is enabled.
+- Added reminder for user to clear cache of optimization plugins similar to W3 Total Cache or WP Super Cache.
 
 = v1.6 =
 - Improved the "Force Load Static Files Using HTTPS" feature.
