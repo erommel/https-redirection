@@ -32,7 +32,6 @@ function httpsrdrctn_settings_page() {
         }
     }
     $siteSSLurl = get_home_url(null, '', 'https');
-    echo $siteSSLurl;
     /* Display form on the setting page */
     ?>
     <div class="wrap">
@@ -58,37 +57,65 @@ function httpsrdrctn_settings_page() {
                     <tr valign="top">
                         <th scope="row"><?php _e('Enable automatic redirection to the "HTTPS"', 'https_redirection'); ?></th>
                         <td>
-                            <label><input type="checkbox" name="httpsrdrctn_https" value="1" <?php if ('1' == $httpsrdrctn_options['https']) echo "checked=\"checked\" "; ?>/></label><br />
+                            <label><input type="checkbox" id="httpsrdrctn-checkbox" name="httpsrdrctn_https" value="1" <?php if ('1' == $httpsrdrctn_options['https']) echo "checked=\"checked\" "; ?>/></label><br />
                             <p class="description">Use this option to make your webpage(s) load in HTTPS version only. If someone enters a non-https URL in the browser's address bar then the plugin will automatically redirect to the HTTPS version of that URL.</p>
-
-                            <br />
-                            <p>You can apply a force HTTPS redirection on your entire domain or just a few pages.</p>
-                            <label <?php if ('0' == $httpsrdrctn_options['https']) echo 'class="hidden"'; ?>><input type="radio" name="httpsrdrctn_https_domain" value="1" <?php if ('1' == $httpsrdrctn_options['https_domain']) echo "checked=\"checked\" "; ?>/> The whole domain</label><br />
-                            <label <?php if ('0' == $httpsrdrctn_options['https']) echo 'class="hidden"'; ?>><input type="radio" name="httpsrdrctn_https_domain" value="0" <?php if ('0' == $httpsrdrctn_options['https_domain']) echo "checked=\"checked\" "; ?>/> A few pages</label><br />
-                            <?php foreach ($httpsrdrctn_options['https_pages_array'] as $https_page) { ?>
-                                <span class="<?php if ('1' == $httpsrdrctn_options['https_domain'] || '0' == $httpsrdrctn_options['https']) echo 'hidden'; ?>" >
-                                    <?php echo str_replace("http://", "https://", home_url()); ?>/<input type="text" name="httpsrdrctn_https_pages_array[]" value="<?php echo $https_page; ?>" /> <span class="rewrite_delete_item">&nbsp;</span> <span class="rewrite_item_blank_error"><?php _e('Please, fill field', 'list'); ?></span><br />
-                                </span>
-                            <?php } ?>
-                            <span class="rewrite_new_item <?php if ('1' == $httpsrdrctn_options['https_domain'] || '0' == $httpsrdrctn_options['https']) echo 'hidden'; ?>" >
-                                <?php echo str_replace("http://", "https://", home_url()); ?>/<input type="text" name="httpsrdrctn_https_pages_array[]" value="" /> <span class="rewrite_add_item">&nbsp;</span> <span class="rewrite_item_blank_error"><?php _e('Please, fill field', 'list'); ?></span><br />
-                            </span>                                                        
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row"><?php _e('Force resources to use HTTPS URL', 'https_redirection'); ?></th>
-                        <td>
-                            <label><input type="checkbox" name="httpsrdrctn_force_resources" value="1" <?php if (isset($httpsrdrctn_options['force_resources']) && $httpsrdrctn_options['force_resources'] == '1') echo "checked=\"checked\" "; ?>/></label><br />
-                            <p class="description">When checked, the plugin will force load HTTPS URL for any static resources in your content. Example: if you have have an image embedded in a post with a NON-HTTPS URL, this option will change that to a HTTPS URL.</p>
                         </td>
                     </tr>
                 </table>
+                <div style="position: relative">
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">Apply HTTPS redirection on:</th>
+                            <td>
+                                <label><input type="radio" name="httpsrdrctn_https_domain" value="1" <?php if ('1' == $httpsrdrctn_options['https_domain']) echo "checked=\"checked\" "; ?>/> The whole domain</label><br />
+                                <label><input type="radio" name="httpsrdrctn_https_domain" value="0" <?php if ('0' == $httpsrdrctn_options['https_domain']) echo "checked=\"checked\" "; ?>/> A few pages</label><br />
+                                <?php foreach ($httpsrdrctn_options['https_pages_array'] as $https_page) { ?>
+                                    <span>
+                                        <?php echo str_replace("http://", "https://", home_url()); ?>/<input type="text" name="httpsrdrctn_https_pages_array[]" value="<?php echo $https_page; ?>" /> <span class="rewrite_delete_item">&nbsp;</span> <span class="rewrite_item_blank_error"><?php _e('Please, fill field', 'list'); ?></span><br />
+                                    </span>
+                                <?php } ?>
+                                <span class="rewrite_new_item" >
+                                    <?php echo str_replace("http://", "https://", home_url()); ?>/<input type="text" name="httpsrdrctn_https_pages_array[]" value="" /> <span class="rewrite_add_item">&nbsp;</span> <span class="rewrite_item_blank_error"><?php _e('Please, fill field', 'list'); ?></span><br />
+                                </span>                                                        
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <th scope="row"><?php _e('Force resources to use HTTPS URL', 'https_redirection'); ?></th>
+                            <td>
+                                <label><input type="checkbox" name="httpsrdrctn_force_resources" value="1" <?php if (isset($httpsrdrctn_options['force_resources']) && $httpsrdrctn_options['force_resources'] == '1') echo "checked=\"checked\" "; ?>/></label><br />
+                                <p class="description">When checked, the plugin will force load HTTPS URL for any static resources in your content. Example: if you have have an image embedded in a post with a NON-HTTPS URL, this option will change that to a HTTPS URL.</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <style>
+                        #httpsrdrctn-overlay {
+                            position: absolute;
+                            top: 10px;
+                            background-color: white;
+                            width: 100%;
+                            height: 100%;
+                            opacity: 0.5;
+                            text-align: center;
+                        }
+                    </style>
+                    <div id="httpsrdrctn-overlay"<?php echo ($httpsrdrctn_options['https'] == 1 ? ' class="hidden"' : ''); ?>></div>
+                </div>
                 <input type="hidden" name="httpsrdrctn_form_submit" value="submit" />
                 <p class="submit">
                     <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
                 </p>
                 <?php wp_nonce_field(plugin_basename(__FILE__), 'httpsrdrctn_nonce_name'); ?>
             </form>
+
+            <script>
+                jQuery('input#httpsrdrctn-checkbox').change(function () {
+                    if (jQuery(this).is(':checked')) {
+                        jQuery('div#httpsrdrctn-overlay').fadeOut('fast');
+                    } else {
+                        jQuery('div#httpsrdrctn-overlay').fadeIn('fast');
+                    }
+                });
+            </script>
 
             <div style="background: #FFEBE8; border: 1px solid #CC0000; color: #333333; margin: 10px 0; padding: 5px 5px 5px 10px;">
                 <p><strong><?php _e("Notice:", 'https_redirection'); ?></strong> <?php _e("It is very important to be extremely attentive when making changes to .htaccess file.", 'https_redirection'); ?></p>
