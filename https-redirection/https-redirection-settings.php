@@ -1,5 +1,4 @@
 <?php
-
 /* Function for display htaccess settings page in the admin area */
 
 function httpsrdrctn_settings_page() {
@@ -32,21 +31,23 @@ function httpsrdrctn_settings_page() {
             //httpsrdrctn_generate_htaccess();
         }
     }
+    $siteSSLurl = get_home_url(null, '', 'https');
+    echo $siteSSLurl;
     /* Display form on the setting page */
     ?>
-        <div class="wrap">
-            <div class="icon32 icon32-bws" id="icon-options-general"></div>
-            <h2><?php _e('HTTPS Redirection Settings', 'https_redirection'); ?></h2>
-            
-            <div style="background: #fff6d5; border: 1px solid #d1b655; color: #3f2502; margin: 10px 0; padding: 5px 5px 5px 10px; text-shadow: 1px 1px #ffffff;">
-                <p>When you enable the HTTPS redirection, the plugin will force redirect the URL to the HTTPS version of the URL. 
-                So before enabling this plugin's feature, enter your site's HTTPS URL (example: https://yoursite.com/some-page) in the browser's address bar to make sure the page loads correctly. 
-                Otherwise you may get locked out if your SSL certificate is not installed correctly on your site or the HTTPS URL is not working and this plugin is auto redirecting to the HTTPS URL.
-                </p>
-            </div>
+    <div class="wrap">
+        <div class="icon32 icon32-bws" id="icon-options-general"></div>
+        <h2><?php _e('HTTPS Redirection Settings', 'https_redirection'); ?></h2>
 
-            <?php 
-            if ( get_option('permalink_structure') ) {
+        <div style="background: #fff6d5; border: 1px solid #d1b655; color: #3f2502; margin: 10px 0; padding: 5px 5px 5px 10px; text-shadow: 1px 1px #ffffff;">
+            <p>When you enable the HTTPS redirection, the plugin will force redirect the URL to the HTTPS version of the URL. 
+                So before enabling this plugin's feature, visit your site's HTTPS URL <a href="<?php echo $siteSSLurl; ?>" target="_blank"><?php echo $siteSSLurl; ?></a> to make sure the page loads correctly. 
+                Otherwise you may get locked out if your SSL certificate is not installed correctly on your site or the HTTPS URL is not working and this plugin is auto redirecting to the HTTPS URL.
+            </p>
+        </div>
+
+        <?php
+        if (get_option('permalink_structure')) {
             //Pretty permalink is enabled. So allow HTTPS redirection feature.
             ?>
             <div id="httpsrdrctn_settings_notice" class="updated fade" style="display:none"><p><strong><?php _e("Notice:", 'https_redirection'); ?></strong> <?php _e("The plugin's settings have been changed. In order to save them please don't forget to click the 'Save Changes' button.", 'https_redirection'); ?></p></div>
@@ -64,13 +65,13 @@ function httpsrdrctn_settings_page() {
                             <p>You can apply a force HTTPS redirection on your entire domain or just a few pages.</p>
                             <label <?php if ('0' == $httpsrdrctn_options['https']) echo 'class="hidden"'; ?>><input type="radio" name="httpsrdrctn_https_domain" value="1" <?php if ('1' == $httpsrdrctn_options['https_domain']) echo "checked=\"checked\" "; ?>/> The whole domain</label><br />
                             <label <?php if ('0' == $httpsrdrctn_options['https']) echo 'class="hidden"'; ?>><input type="radio" name="httpsrdrctn_https_domain" value="0" <?php if ('0' == $httpsrdrctn_options['https_domain']) echo "checked=\"checked\" "; ?>/> A few pages</label><br />
-    <?php foreach ($httpsrdrctn_options['https_pages_array'] as $https_page) { ?>
-                                    <span class="<?php if ('1' == $httpsrdrctn_options['https_domain'] || '0' == $httpsrdrctn_options['https']) echo 'hidden'; ?>" >
-        <?php echo str_replace("http://", "https://", home_url()); ?>/<input type="text" name="httpsrdrctn_https_pages_array[]" value="<?php echo $https_page; ?>" /> <span class="rewrite_delete_item">&nbsp;</span> <span class="rewrite_item_blank_error"><?php _e('Please, fill field', 'list'); ?></span><br />
-                                    </span>
-    <?php } ?>
+                            <?php foreach ($httpsrdrctn_options['https_pages_array'] as $https_page) { ?>
+                                <span class="<?php if ('1' == $httpsrdrctn_options['https_domain'] || '0' == $httpsrdrctn_options['https']) echo 'hidden'; ?>" >
+                                    <?php echo str_replace("http://", "https://", home_url()); ?>/<input type="text" name="httpsrdrctn_https_pages_array[]" value="<?php echo $https_page; ?>" /> <span class="rewrite_delete_item">&nbsp;</span> <span class="rewrite_item_blank_error"><?php _e('Please, fill field', 'list'); ?></span><br />
+                                </span>
+                            <?php } ?>
                             <span class="rewrite_new_item <?php if ('1' == $httpsrdrctn_options['https_domain'] || '0' == $httpsrdrctn_options['https']) echo 'hidden'; ?>" >
-    <?php echo str_replace("http://", "https://", home_url()); ?>/<input type="text" name="httpsrdrctn_https_pages_array[]" value="" /> <span class="rewrite_add_item">&nbsp;</span> <span class="rewrite_item_blank_error"><?php _e('Please, fill field', 'list'); ?></span><br />
+                                <?php echo str_replace("http://", "https://", home_url()); ?>/<input type="text" name="httpsrdrctn_https_pages_array[]" value="" /> <span class="rewrite_add_item">&nbsp;</span> <span class="rewrite_item_blank_error"><?php _e('Please, fill field', 'list'); ?></span><br />
                             </span>                                                        
                         </td>
                     </tr>
@@ -88,7 +89,7 @@ function httpsrdrctn_settings_page() {
                 </p>
                 <?php wp_nonce_field(plugin_basename(__FILE__), 'httpsrdrctn_nonce_name'); ?>
             </form>
-            
+
             <div style="background: #FFEBE8; border: 1px solid #CC0000; color: #333333; margin: 10px 0; padding: 5px 5px 5px 10px;">
                 <p><strong><?php _e("Notice:", 'https_redirection'); ?></strong> <?php _e("It is very important to be extremely attentive when making changes to .htaccess file.", 'https_redirection'); ?></p>
                 <p>If after making changes your site stops functioning, do the following:</p>
@@ -102,19 +103,19 @@ function httpsrdrctn_settings_page() {
 
                 <p>The changes will be applied immediately after saving the changes, if you are not sure - do not click the "Save changes" button.</p>
             </div>
-            
-        <?php 
+
+            <?php
         } else {
-        //pretty permalink is NOT enabled. This plugin can't work.
-        ?>
+            //pretty permalink is NOT enabled. This plugin can't work.
+            ?>
             <div class="error">
-            <p><?php _e('HTTPS redirection only works if you have pretty permalinks enabled.', 'https_redirection'); ?></p>
-            <p><?php _e('To enable pretty permalinks go to <em>Settings > Permalinks</em> and select any option other than "default".', 'https_redirection'); ?></p>
-            <p><a href="options-permalink.php">Enable Permalinks</a></p>
+                <p><?php _e('HTTPS redirection only works if you have pretty permalinks enabled.', 'https_redirection'); ?></p>
+                <p><?php _e('To enable pretty permalinks go to <em>Settings > Permalinks</em> and select any option other than "default".', 'https_redirection'); ?></p>
+                <p><a href="options-permalink.php">Enable Permalinks</a></p>
             </div>
-        <?php 
-        } 
+            <?php
+        }
         ?>
-        </div>
+    </div>
     <?php
 }

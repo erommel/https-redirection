@@ -93,6 +93,9 @@ Here is an example for German language files.
 
 == Changelog ==
 
+= v1.7 =
+- https://yoursite.com/some-page is replaced with site's actual https address in Settings information box.
+
 = v1.6 =
 - Improved the "Force Load Static Files Using HTTPS" feature.
 - The htaccess redirection is now detected based on SERVER_PORT (this is should work better on most servers).
